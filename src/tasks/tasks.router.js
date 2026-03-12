@@ -9,7 +9,9 @@ tasksRouter.get("/tasks",tasksController.handleGetRequest);
 tasksRouter.post("/tasks", [
     body("title","Title is required").notEmpty(),
     body("title","Title must be a string").isString(),
-    body("dueDate","Due date must be a valid date").notEmpty().isISO8601(),
+    body("dueDate","Due date must be a valid date")
+    .notEmpty()
+    .isISO8601(),
 ],
 (req,res)=>{
     const result = validationResult(req);
