@@ -1,18 +1,12 @@
 const express = require('express');
 const tasksController = require("./tasks.controller.js");
 const {body, validationResult} = require('express-validator');
+const createTaskValidator = require('./validators/createTask.validator.js');
 
 const tasksRouter = express.Router();
 
 tasksRouter.get("/tasks",tasksController.handleGetRequest);
-
-tasksRouter.post("/tasks", [
-    body("title","Title is required").notEmpty(),
-    body("title","Title must be a string").isString(),
-    body("dueDate","Due date must be a valid date")
-    .notEmpty()
-    .isISO8601(),
-],
+tasksRouter.post("/tasks",createTaskValidator,
 (req,res)=>{
     const result = validationResult(req);
     if(result.isEmpty()){
