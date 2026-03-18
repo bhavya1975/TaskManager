@@ -11,9 +11,10 @@ const usersRouter = require('./users/users.route.js');
 const app = express();
 const port = 3001;              // 9..65,535 http://localhost:3001
 const mongoose = require('mongoose');
+const expressWinstonsMiddleware = require('./middleware/expressWinstons.middleware.js');
 
 app.use(express.json());        // to parse incoming JSON data in request body
-app.use(responseFormatter);    // to format the response in a consistent way
+
 app.use(cors());               // to enable CORS for all routes
 
 const corsOptions = {
@@ -22,11 +23,14 @@ const corsOptions = {
 
 let accessLogStream = fs.createWriteStream(
     path.join(__dirname, ".." ,"access.log"), 
-    { flags: 'a' }
+    { flags: "a" }
 );
 // a will append to the log not replace it
 
+app.use(responseFormatter);    // to format the response in a consistent way
 app.use(morgan('combined', { stream: accessLogStream}))
+app.use(expressWinstonsMiddleware);  // to log HTTP requests using winston
+
 
 app.use("/",tasksRouter);
 app.use("/auth",authRouter);
