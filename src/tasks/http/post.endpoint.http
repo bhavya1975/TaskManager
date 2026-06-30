@@ -2,9 +2,9 @@ POST http://localhost:3001/tasks
 Content-Type: application/json
 
 {
-  "title": "title of the task-30",
-  "dueDate": "2025-01-01T12:00:00Z",
-  "description": "idot know what it is",
+  "title": "title of the task-33",
+  "dueDate": "2024-06-30T12:00:00Z",
+  "description": "task 33 added with all details",
   "priority": "high",
-  "status": "todo"
+  "status": "todos"
 }

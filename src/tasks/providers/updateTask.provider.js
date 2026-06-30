@@ -1,19 +1,39 @@
 const Task = require('../tasks.schema.js');
+const {matchedData} = require('express-validator');
+const {StatusCodes} = require('http-status-codes');
+const errorLogger = require('../../helpers/errorLogger.helper.js');
 
 async function updateTaskProvider(req,res){
-    //fetch id
-    const task = await Task.findById(req.body["_id"]);
+    const validatedData = matchedData(req);
+    try{
+    // Fetch id from validated payload
+    const task = await Task.findById(validatedData._id).exec(); 
     if(!task){
-        throw new Error("Task not found");
+        return res.status(StatusCodes.NOT_FOUND).json({
+            reason: "Task not found"
+        });
     }
     //update
-    task.title = req.body.title;
-    task.description = req.body.description;
-    task.status = req.body.status;
-    task.priority = req.body.priority;
-    task.dueDate = req.body.dueDate;
+    task.title = validatedData.title || task.title; 
+    task.description = validatedData.description || task.description;
+    task.status = validatedData.status || task.status;
+    task.priority = validatedData.priority || task.priority;
+    task.dueDate = validatedData.dueDate || task.dueDate;
     //save
-    return await task.save();  
+    await task.save();  
+    return res.status(StatusCodes.OK).json(task);
+    }
+    catch(error){
+        errorLogger("Error updating tasks", req, error);
+        if(error.name === "ValidationError" || error.name === "CastError"){
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                reason: error.message
+            });
+        }
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            reason: "Failed to update task please try again later"
+        });
+    }
 }
 
 //fetch id

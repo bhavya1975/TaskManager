@@ -5,8 +5,8 @@ const updateTaskProvider = require('./providers/updateTask.provider.js');
 const deleteTaskProvider = require('./providers/deleteTask.provider.js');
 
 async function handleGetRequest(req,res){
-    const tasks = await getTasksProvider(req,res);
-    res.status(StatusCodes.OK).json(tasks);
+    return await getTasksProvider(req,res);
+    // res.status(StatusCodes.OK).json(tasks);
 }
 // res.status(StatusCodes.OK).json({
     //     status: "success",
@@ -23,14 +23,13 @@ async function handlePostRequest(req,res){
 }
 
 async function handlePatchRequest(req,res){
-    const updatedTask = await updateTaskProvider(req,res);
-    res.status(StatusCodes.OK).json(updatedTask);
+    return await updateTaskProvider(req,res);
 }
 
 async function handleDeleteRequest(req,res){
-    const deletedTask = await deleteTaskProvider(req,res);
-    res.status(StatusCodes.OK).json(deletedTask);
+    return await deleteTaskProvider(req,res);
 }
+
 
 module.exports = {
     handleGetRequest,

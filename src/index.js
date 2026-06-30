@@ -8,15 +8,21 @@ const responseFormatter = require('./middleware/responseFormatter.js');
 const { StatusCodes } = require('http-status-codes');
 const authRouter = require('./auth/auth.router.js');
 const usersRouter = require('./users/users.route.js');
-const app = express();
-const port = 3001;              // 9..65,535 http://localhost:3001
+const app = express();           // 9..65,535 http://localhost:3001
 const mongoose = require('mongoose');
 const expressWinstonsMiddleware = require('./middleware/expressWinstons.middleware.js');
-
+const dotenv = require('dotenv');
 app.use(express.json());        // to parse incoming JSON data in request body
 
 app.use(cors());               // to enable CORS for all routes
 
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+const envFile = `.env.${process.env.NODE_ENV}`;
+
+dotenv.config({ path: path.join(__dirname, '..', envFile) });
+
+const port = parseInt(process.env.PORT) ;   
+// console.log(process.env.NODE_ENV); // Output: PROD_VALUE_ENV
 const corsOptions = {
     origin: ["http://localhost:3000", "http://example.com"]
 };
@@ -55,8 +61,8 @@ app.use((req,res)=>{
 
 async function bootstrap(){
     try{
-        await mongoose.connect("mongodb+srv://bhavyamsurati_db_user:alfaalfamongodb@fullstacknode.cqhd6dl.mongodb.net/",
-            {dbName: "fullstackTasks"}
+        await mongoose.connect(process.env.DATABASE_URL,
+            {dbName: process.env.DATABASE_NAME}
         );
         console.log("Connected to MongoDB");
         app.listen(port,()=>{
@@ -74,3 +80,4 @@ bootstrap();
 // app.listen(port,()=>{
 //     console.log(`Server is running on port ${port}`);
 // });
+
